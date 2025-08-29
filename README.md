@@ -11,6 +11,7 @@ A monorepo implementation of an Invoice Management System using Clean Architectu
 - Containerization: Docker
 
 ## Structure
+```bash
 monorepo(invoice-management)/
 ├── app/
 │ ├── backend/ # Nest.js application
@@ -22,7 +23,7 @@ monorepo(invoice-management)/
 ├── package.json
 ├── README.md
 └── pnpm-workspace.yaml # pnpm workspace config
-
+```
 
 
 ## Getting Started
