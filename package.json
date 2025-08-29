@@ -1,0 +1,21 @@
+{
+  "name": "invoice-management",
+  "version": "1.0.0",
+  "description": "Monorepo for Invoice Management System with NestJS backend and Angular frontend",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm run --recursive build",
+    "test": "pnpm run --recursive test",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend start",
+    "install:all": "pnpm install --recursive"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "packageManager": "pnpm@8.6.0",
+  "keywords": [],
+  "author": "KrushitKumar-Khokhar",
+  "license": "ISC"
+}
