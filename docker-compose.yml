@@ -3,39 +3,33 @@ services:
     build:
       context: ./app/backend
       dockerfile: Dockerfile
-      container_name: invoice-backend
-      restart: always
-      ports:
-        - "3000:3000"
-      env_file:
-        - .env
-      environment:
-        DB_HOST: ${DB_HOST}
-        DB_PORT: ${DB_PORT}
-        DB_USERNAME: ${DB_USERNAME}
-        DB_PASSWORD: ${DB_PASSWORD}
-        DB_DATABASE: ${DB_DATABASE}
-      volumes:
-        - ./app/backend:/app
-        - ./app/node_modules
-      networks:
-        - invoice-network
-    
-  frontend:
-    build:
-      context: ./app/frontend
-      dockerfile: Dockerfile
-    container_name: invoice-frontend
+    container_name: invoice-backend
     restart: always
     ports:
-      - "4200:4200"
+      - "5000:5000"
     env_file:
-      - .env
-    environment:
-      API_URL: ${API_URL}
+      - ./app/backend/.env
     volumes:
-      - ./app/frontend:/app
+      - ./app/backend:/app
       - /app/node_modules
+    networks:
+      - invoice-network
+    
+  # frontend:
+  #   build:
+  #     context: ./app/frontend
+  #     dockerfile: Dockerfile
+  #   container_name: invoice-frontend
+  #   restart: always
+  #   ports:
+  #     - "4200:4200"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     API_URL: ${API_URL}
+  #   volumes:
+  #     - ./app/frontend:/app
+  #     - /app/node_modules
 
 networks:
   invoice-network:

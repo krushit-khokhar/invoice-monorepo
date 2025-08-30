@@ -1,0 +1,81 @@
+    this task wise this project structure backend/
+    ├── src/
+    │   ├── config/                     
+    │   │   ├── config.services.ts           
+    │   │   └── configuration.ts 
+    │   ├── core/                       # Domain Layer (Entities + Interfaces)
+    │   │   ├── invoice/               # Business models
+    │   │   │   ├── entities/
+    │   │   │   │   └── invoice.entity.ts
+    │   │   │   └── repositories/
+    │   │   │       └── invoice.repository.ts
+    │   │   └── invoice-item/           # Abstract repository interfaces
+    │   │       ├── entities/
+    │   │       │   └── invoice-item.entity.ts
+    │   │       └── repositories/
+    │   │           └── invoice-item.repository.ts
+    │   │
+    │   ├── application/                # Use Cases Layer
+    │   │   ├── invoice/               # Business models
+    │   │   │   ├── dtos/
+    │   │   │   │   ├── create-invoice.dto.ts
+    │   │   │   │   ├── search-invoice.dto.ts
+    │   │   │   │   └── list-invoice.dto.ts
+    │   │   │   ├── use-cases/
+    │   │   │   │   ├── create-invoice.usecase.ts
+    │   │   │   │   ├── get-invoice-by-id.usecase.ts
+    │   │   │   │   ├── list-invoice.usecase.ts
+    │   │   │   │   └── search-invoice.usecase.ts
+    │   │   │   └── services/
+    │   │   │       └── invoice.service.ts
+    │   │   └── invoice-item/           # Abstract repository interfaces
+    │   │       ├── dto/
+    │   │       │   └── create-invoice-item.dto.ts
+    │   │       ├── use-cases/
+    │   │       │   ├── create-invoice-item.usecase.ts
+    │   │       │   └── get-items-by-invoice-id.usecase.ts
+    │   │       └── services/
+    │   │           └── invoice-item.service.ts
+    │   │ 
+    │   ├── infrastructure/             # Database, external services
+    │   │   ├── database.module.ts
+    │   │   ├── invoice/               # Business models
+    │   │   │   ├── entities/
+    │   │   │   │   └── invoice.orm-entity.ts
+    │   │   │   └── repositories/
+    │   │   │       └── invoice.repository.impl.ts
+    │   │   └── invoice-item/           # Abstract repository interfaces
+    │   │       ├── entities/
+    │   │       │   └── invoice-item.orm-entity.ts
+    │   │       └── repositories/
+    │   │           └── invoice-item.repository.impl.ts
+    │   │
+    │   ├── presentation/               # NestJS Controllers
+    │   │   ├── invoice/
+    │   │   │   ├── controllers/
+    |   │   │   │   ├── incoice.controllers.ts
+    │   │   │   └── modules/
+    |   │   │       └── invoice.module.ts
+    │   │   └── invoice-item/
+    │   │   │   ├── controllers/
+    |   │   │   │   ├── incoice-item.controllers.ts
+    │   │   │   └── modules/
+    |   │   │       └── invoice-item.module.ts
+    │   │
+    │   ├── app.controllers.spec.ts    
+    │   ├── app.controllers.ts    
+    │   ├── app.services.ts    
+    │   ├── main.ts                     # Entry point
+    │   └── app.module.ts               # Root module
+    │
+    ├── test/
+    ├── .dockerignore
+    ├── .env
+    ├── .prettierrc
+    ├── Dockerfile
+    ├── eslint.config.mjs
+    ├── package.json
+    ├── nest-cli.json
+    ├── README.md
+    ├── tsconfig.build.json
+    └── tsconfig.json
