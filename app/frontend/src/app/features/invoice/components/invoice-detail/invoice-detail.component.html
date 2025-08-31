@@ -26,7 +26,7 @@
         <div class="invoice-date">Date: {{ invoice.invoice_date | dateFormat }}</div>
       </div>
       <div class="invoice-total">
-        <h2>Total: {{ invoice.total | currencyFormat }}</h2>
+        <h2>Total: {{ invoice.total_amount | currencyFormat }}</h2>
       </div>
     </div>
 
@@ -35,13 +35,13 @@
       <div class="from-details">
         <h3>From:</h3>
         <p><strong>{{ invoice.from_name }}</strong></p>
-        <p>{{ invoice.fromAddress }}</p>
+        <p>{{ invoice.from_address }}</p>
       </div>
       
       <div class="to-details">
         <h3>To:</h3>
         <p><strong>{{ invoice.to_name }}</strong></p>
-        <p>{{ invoice.toAddress }}</p>
+        <p>{{ invoice.to_address }}</p>
       </div>
     </div>
 
@@ -59,8 +59,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of invoice.items">
-            <td>{{ item.itemName }}</td>
-            <td>{{ item.quantity }}</td>
+            <td>{{ item.item_name }}</td>
+            <td>{{ item.qty }}</td>
             <td>{{ item.rate | currencyFormat }}</td>
             <td>{{ item.total | currencyFormat }}</td>
           </tr>
@@ -68,7 +68,7 @@
         <tfoot>
           <tr>
             <td colspan="3" class="total-label">Grand Total</td>
-            <td class="total-amount">{{ invoice.total | currencyFormat }}</td>
+            <td class="total-amount">{{ invoice.total_amount | currencyFormat }}</td>
           </tr>
         </tfoot>
       </table>

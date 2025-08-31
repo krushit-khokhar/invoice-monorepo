@@ -25,6 +25,8 @@ import { InvoiceSearchComponent } from './components/invoice-search/invoice-sear
 import { SharedModule } from '../../shared/shared.module';
 import { InvoiceRoutingModule } from './invoice-routing.module';
 import { InvoiceService } from './services/invoice.service';
+import { DateFormatPipe } from '../../shared/pipes/date-format.pipe';
+import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { InvoiceService } from './services/invoice.service';
   ],
   imports: [
     CommonModule,
+    DateFormatPipe,
+    CurrencyFormatPipe,
     ReactiveFormsModule,
     RouterModule,
     

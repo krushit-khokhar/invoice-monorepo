@@ -36,7 +36,9 @@ export class InvoiceController {
     summary: 'List all invoices', 
     description: 'Retrieves a list of all invoices with optional sorting' 
   })
-  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'], example: 'DESC' })
+  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'], example: 'DESC', description: 'Sort order'  })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Items per page (max: 100)' })
   @ApiResponse({ 
     status: 200, 
     description: 'Invoices retrieved successfully',

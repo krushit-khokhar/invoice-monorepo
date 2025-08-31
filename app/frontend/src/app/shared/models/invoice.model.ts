@@ -15,6 +15,7 @@ export interface Invoice {
 export interface CreateInvoice {
   from_name: string;
   from_address: string;
+  invoice_date:string;
   to_name: string;
   to_address: string;
   items: Omit<InvoiceItem, 'id' | 'total'>[];

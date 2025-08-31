@@ -7,7 +7,7 @@
   </div>
 
   <!-- Search Component -->
-  <app-invoice-search 
+  <app-invoice-search
     (searchChange)="onSearchParamsChange($event)">
   </app-invoice-search>
 
@@ -29,6 +29,7 @@
         No invoices match your search criteria. <a (click)="onSearchParamsChange({})">Clear filters</a>
       </p>
     </div>
+    
 
     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)" class="mat-elevation-z2">
       <!-- Invoice Number Column -->
@@ -56,9 +57,9 @@
       </ng-container>
 
       <!-- Total Amount Column -->
-      <ng-container matColumnDef="total">
+      <ng-container matColumnDef="total_amount">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Amount</th>
-        <td mat-cell *matCellDef="let invoice">{{ invoice.total | currencyFormat }}</td>
+        <td mat-cell *matCellDef="let invoice">{{ invoice.total_amount | currencyFormat }}</td>
       </ng-container>
 
       <!-- Actions Column -->

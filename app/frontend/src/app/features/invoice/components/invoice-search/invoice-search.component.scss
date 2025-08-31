@@ -57,6 +57,17 @@
     }
   }
 }
+.amount-filters, .name-filters {
+  display: flex;
+  align-items: center;
+  gap: 16px; // space between fields and button
+  flex-wrap: wrap; // responsive on small screens
+}
+
+.amount-field, .name-field {
+  flex: 1; // both inputs take equal width
+  min-width: 100px; // prevent shrinking too small
+}
 
 // Responsive design
 @media (max-width: 768px) {

@@ -1,47 +1,53 @@
+// dtos/invoice-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { InvoiceItemOrmEntity } from 'src/infrastructure/invoice-item/entities/invoice-item.orm-entity';
+import { InvoiceItemResponseDto } from 'src/application/invoice-item/dtos/invoice-item-response.dto';
 
 export class InvoiceResponseDto {
-  @ApiProperty({ description: 'Invoice ID', example: 1 })
+  @ApiProperty()
   id: number;
 
-  @ApiProperty({ description: 'Unique invoice number', example: 'INV-2023-001' })
+  @ApiProperty()
   invoice_number: string;
 
-  @ApiProperty({ description: 'Name of the sender/company', example: 'Acme Corporation' })
+  @ApiProperty()
   from_name: string;
 
-  @ApiProperty({ description: 'Address of the sender/company', example: '123 Business St, City, Country' })
+  @ApiProperty()
   from_address: string;
 
-  @ApiProperty({ description: 'Name of the recipient/client', example: 'John Doe' })
+  @ApiProperty()
   to_name: string;
 
-  @ApiProperty({ description: 'Address of the recipient/client', example: '456 Client Ave, City, Country' })
+  @ApiProperty()
   to_address: string;
 
-  @ApiProperty({ description: 'Invoice date and time', example: '2023-12-01T00:00:00.000Z' })
+  @ApiProperty()
   invoice_date: Date;
 
-  @ApiProperty({ 
-    description: 'Invoice items', 
-    type: [InvoiceItemOrmEntity],
-    example: [
-      {
-        id: 1,
-        item_name: 'Web Development Services',
-        qty: 10,
-        rate: 100.50,
-        total: 1005.00,
-        invoice_id:1
-      }
-    ]
-  })
-  items: InvoiceItemOrmEntity[];
+  @ApiProperty({ type: [InvoiceItemResponseDto] })
+  items: InvoiceItemResponseDto[];
 
-  @ApiProperty({ description: 'Creation timestamp', example: '2023-12-01T10:30:00.000Z' })
-  createdAt: Date;
+  @ApiProperty()
+  total_amount: number;
 
-  @ApiProperty({ description: 'Last update timestamp', example: '2023-12-01T10:30:00.000Z' })
-  updatedAt: Date;
+  constructor(invoice: any) {
+    this.id = invoice.id;
+    this.invoice_number = invoice.invoice_number;
+    this.from_name = invoice.from_name;
+    this.from_address = invoice.from_address;
+    this.to_name = invoice.to_name;
+    this.to_address = invoice.to_address;
+    this.invoice_date = invoice.invoice_date;
+    this.items = invoice.items || [];
+    this.total_amount = this.calculateTotalAmount(invoice);
+  }
+
+  private calculateTotalAmount(invoice: any): number {
+    if (invoice.items && Array.isArray(invoice.items)) {
+      return invoice.items.reduce((sum: number, item: any) => {
+        return sum + (item.total || 0);
+      }, 0);
+    }
+    return 0;
+  }
 }

@@ -19,7 +19,7 @@ export class InvoiceRepositoryImpl implements IInvoiceRepository {
 
   private toDomain(entity: InvoiceOrmEntity): DomainInvoice {
     const items = (entity.items || []).map(
-      (it) => new DomainInvoiceItem(it.id, it.item_name, Number(it.qty), Number(it.rate), 0),
+      (it) => new DomainInvoiceItem(it.id, it.item_name, Number(it.qty), Number(it.rate), Number(it.total), 0),
     );
     return new DomainInvoice(
       entity.id,
@@ -48,7 +48,7 @@ export class InvoiceRepositoryImpl implements IInvoiceRepository {
       oi.item_name = it.item_name;
       oi.qty = it.qty;
       oi.rate = it.rate;
-      oi.total = Number(it.qty * it.rate);
+      oi.total = it.total;
       return oi;
     });
     return e;
@@ -72,13 +72,28 @@ export class InvoiceRepositoryImpl implements IInvoiceRepository {
     }
   }
 
-  async findAll(order: 'ASC' | 'DESC'): Promise<DomainInvoice[]> {
+  async findAll(
+    order: 'ASC' | 'DESC', 
+    page = 1,
+    limit = 10
+  ): Promise<{data: DomainInvoice[]; total: number; page: number; limit: number, total_pages:number}> {
         try {
-      const results = await this.repo.find({ order: { invoice_date: order } });
+      const [results, total] = await this.repo.findAndCount({
+      order: { invoice_date: order },
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: ['items'],
+    });
       if (!results || results.length === 0) {
         throw new NotFoundException('No invoices found');
       }
-      return results.map((r) => this.toDomain(r));
+      return {
+      data: results.map((r) => this.toDomain(r)),
+      total,
+      page,
+      limit,
+      total_pages: Math.ceil(total / limit)
+    };
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException('Failed to fetch invoices');
@@ -87,9 +102,8 @@ export class InvoiceRepositoryImpl implements IInvoiceRepository {
 
   async findById(id: number): Promise<DomainInvoice | null> {
    if (!id) throw new BadRequestException('Invoice ID is required');
-
-    try {
-      const inv = await this.repo.findOne({ where: { id }, relations: ['items'] });
+   try {
+     const inv = await this.repo.findOne({ where: { id }, relations: ['items'] });
       if (!inv) {
         throw new NotFoundException(`Invoice with ID ${id} not found`);
       }

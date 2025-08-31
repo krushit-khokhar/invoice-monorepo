@@ -15,7 +15,6 @@ export class InvoiceItemService {
     if (!this.createItemUC) {
       throw new Error('CreateInvoiceItemUseCase is not injected');
     }
-    console.log(dto,"dto")
     return this.createItemUC.execute(invoice_id, dto);
   }
 

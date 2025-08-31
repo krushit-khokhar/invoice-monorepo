@@ -6,6 +6,7 @@ import { CreateInvoiceDto } from '../dtos/create-invoice.dto';
 import { ListInvoicesDto } from '../dtos/list-invoices.dto';
 import { SearchInvoicesDto } from '../dtos/search-invoices.dto';
 import { Invoice } from 'src/core/invoice/entities/invoice.entity';
+import { InvoiceResponseDto } from '../dtos/invoice-response.dto';
 
 export class InvoiceAppService {
   constructor(
@@ -19,12 +20,31 @@ export class InvoiceAppService {
     return this.createInvoice.execute(dto);
   }
 
-  list(params: ListInvoicesDto) {
-    return this.listInvoices.execute(params);
+  async list(params: ListInvoicesDto) {
+    const result = await this.listInvoices.execute(params);
+    
+    // Convert domain entities to response DTOs
+    const data = result.data.map(invoice => new InvoiceResponseDto({
+      ...invoice,
+      total_amount: invoice.total_amount // Use the getter
+    }));
+    return {
+      data,
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      total_pages: result.total_pages
+    };
   }
 
-  getById(id: number) {
-    return this.getInvoiceById.execute(id);
+  async getById(id: number) {
+     const result = await this.getInvoiceById.execute(id);
+    const total_amount = result?.items?.reduce((sum, item) => sum + (item.total || 0), 0) || 0;
+    const data = new InvoiceResponseDto({
+    ...result,
+    total_amount: total_amount
+  });
+  return data;
   }
 
   search(dto: SearchInvoicesDto) {

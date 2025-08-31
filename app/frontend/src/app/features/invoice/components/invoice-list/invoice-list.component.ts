@@ -18,11 +18,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { Invoice, InvoiceSearchParams } from '../../../../shared/models/invoice.model';
 import { InvoiceService } from '../../services/invoice.service';
+import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
+import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 
 @Component({
   selector: 'app-invoice-list',
   imports: [
     CommonModule,
+    DateFormatPipe,
+    CurrencyFormatPipe,
     ReactiveFormsModule,
     RouterModule,
     
@@ -44,14 +48,16 @@ import { InvoiceService } from '../../services/invoice.service';
   styleUrls: ['./invoice-list.component.scss']
 })
 export class InvoiceListComponent implements OnInit {
-  displayedColumns: string[] = ['invoice_number', 'invoice_date', 'from_name', 'to_name', 'total', 'actions'];
+  displayedColumns: string[] = ['invoice_number', 'invoice_date', 'from_name', 'to_name', 'total_amount', 'actions'];
   dataSource = new MatTableDataSource<Invoice>();
   isLoading = false;
   totalItems = 0;
   pageSize = 10;
   currentPage = 0;
 
-  searchParams: InvoiceSearchParams = {
+ private currentSearchParams: InvoiceSearchParams = {
+    page: 1,
+    limit: this.pageSize,
     sort_by: 'invoice_date',
     order: 'DESC'
   };
@@ -73,11 +79,15 @@ export class InvoiceListComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  onSearchParamsChange(params: InvoiceSearchParams): void {
-    this.searchParams = { ...this.searchParams, ...params };
-    this.currentPage = 0; // Reset to first page on new search
-    this.loadInvoices();
-  }
+onSearchParamsChange(params: InvoiceSearchParams): void {
+  this.currentSearchParams = {
+    ...this.currentSearchParams,
+    ...params,
+    page: 1 // always reset to first page when filters change
+  };
+  this.currentPage = 0;
+  this.loadInvoices();
+}
 
   loadInvoices(): void {
     this.isLoading = true;
@@ -85,11 +95,11 @@ export class InvoiceListComponent implements OnInit {
     this.invoiceService.getInvoices(
       this.currentPage + 1,
       this.pageSize,
-      this.searchParams.sort_by,
-      this.searchParams.order,
-      this.searchParams.search,
-      this.searchParams.start_date,
-      this.searchParams.end_date
+      this.currentSearchParams.sort_by,
+      this.currentSearchParams.order,
+      this.currentSearchParams.search,
+      this.currentSearchParams.start_date,
+      this.currentSearchParams.end_date
     ).subscribe({
       next: (response) => {
         this.dataSource.data = response.data;
@@ -110,24 +120,21 @@ export class InvoiceListComponent implements OnInit {
   }
 
   onSortChange(event: Sort): void {
-    this.searchParams.sort_by = event.active;
-    this.searchParams.order = event.direction.toUpperCase() as 'ASC' | 'DESC';
+    this.currentSearchParams.sort_by = event.active;
+    this.currentSearchParams.order = event.direction.toUpperCase() as 'ASC' | 'DESC';
     this.loadInvoices();
   }
 
   viewInvoice(invoice: Invoice): void {
-    this.router.navigate(['/invoices', invoice.id]);
+    this.router.navigate(['/invoices/detail/', invoice.id]);
   }
 
   createInvoice(): void {
     this.router.navigate(['/invoices/create']);
   }
 
-  hasActiveFilters(): boolean {
-    return !!(
-      this.searchParams.search ||
-      this.searchParams.start_date ||
-      this.searchParams.end_date
-    );
+ hasActiveFilters(): boolean {
+    const { search, start_date, end_date, from_name, to_name, min_amount, max_amount } = this.currentSearchParams;
+    return !!(search || start_date || end_date || from_name || to_name || min_amount || max_amount);
   }
 }

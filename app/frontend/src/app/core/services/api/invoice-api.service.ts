@@ -82,7 +82,7 @@ export class InvoiceApiService {
     max_amount?: number;
     page?: number;
     limit?: number;
-    sortBy?: string;
+    sort_by?: string;
     order?: 'ASC' | 'DESC';
   }): Observable<InvoiceListResponse> {
     let httpParams = new HttpParams();

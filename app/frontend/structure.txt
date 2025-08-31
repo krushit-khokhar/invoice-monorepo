@@ -1,0 +1,92 @@
+frontend/ # Angular application
+├── src/
+│   ├── app/
+│   │   ├── core/                       # Singleton services, interceptors, guards
+│   │   │   ├── guards/
+│   │   │   │   └── auth.guard.ts
+│   │   │   ├── interceptors/
+│   │   │   │   └── error.interceptor.ts
+│   │   │   ├── services/
+│   │   │   │   ├── api/
+│   │   │   │   │   ├── invoice-api.service.ts
+│   │   │   │   └── layout.service.ts
+│   │   │   └── core.module.ts
+│   │   ├── shared/                     # Shared components, pipes, directives
+│   │   │   ├── components/
+│   │   │   │   ├── loading-spinner/
+│   │   │   │   │   ├── loading-spinner.component.ts
+│   │   │   │   │   ├── loading-spinner.component.html
+│   │   │   │   │   └── loading-spinner.component.scss
+│   │   │   │   ├── confirm-dialog/
+│   │   │   │   │   ├── confirm-dialog.component.ts
+│   │   │   │   │   ├── confirm-dialog.component.html
+│   │   │   │   │   └── confirm-dialog.component.scss
+│   │   │   │   └── page-not-found/
+│   │   │   │       ├── page-not-found.component.ts
+│   │   │   │       ├── page-not-found.component.html
+│   │   │   │       └── page-not-found.component.scss
+│   │   │   ├── pipes/
+│   │   │   │   ├── currency-format.pipe.ts
+│   │   │   │   └── date-format.pipe.ts
+│   │   │   ├── directives/
+│   │   │   │   └── numbers-only.directive.ts
+│   │   │   ├── models/
+│   │   │   │   ├── invoice.model.ts
+│   │   │   │   ├── invoice-item.model.ts
+│   │   │   │   └── api-response.model.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── constants.ts
+│   │   │   │   └── helpers.ts
+│   │   │   └── shared.module.ts
+│   │   ├── features/                   # Feature modules (Lazy loaded)
+│   │   │   ├── invoice/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── invoice-list/
+│   │   │   │   │   │   ├── invoice-list.component.ts
+│   │   │   │   │   │   ├── invoice-list.component.html
+│   │   │   │   │   │   └── invoice-list.component.scss
+│   │   │   │   │   ├── invoice-create/
+│   │   │   │   │   │   ├── invoice-create.component.ts
+│   │   │   │   │   │   ├── invoice-create.component.html
+│   │   │   │   │   │   └── invoice-create.component.scss
+│   │   │   │   │   ├── invoice-detail/
+│   │   │   │   │   │   ├── invoice-detail.component.ts
+│   │   │   │   │   │   ├── invoice-detail.component.html
+│   │   │   │   │   │   └── invoice-detail.component.scss
+│   │   │   │   │   └── invoice-search/
+│   │   │   │   │       ├── invoice-search.component.ts
+│   │   │   │   │       ├── invoice-search.component.html
+│   │   │   │   │       └── invoice-search.component.scss
+│   │   │   │   ├── services/
+│   │   │   │   │   └── invoice.service.ts
+│   │   │   │   ├── invoice-routing.module.ts
+│   │   │   │   ├── invoice-routes.ts
+│   │   │   │   └── invoice.module.ts
+│   │   ├── layouts/                    # Application layouts
+│   │   ├── app-config.ts       # Main routing configuration
+│   │   ├── app.html          # Root template
+│   │   ├── app.scss          # Root styles
+│   │   └── app.ts               # Root module
+│   ├── assets/
+│   │   ├── icons/                      # App icons
+│   │   ├── images/                     # App images
+│   │   └── styles/                     # Global styles
+│   │       ├── _variables.scss         # SCSS variables
+│   │       ├── _mixins.scss            # SCSS mixins
+│   │       ├── _responsive.scss        # Responsive breakpoints
+│   │       └── global.scss             # Global styles
+│   ├── environments/
+│   │   ├── environment.ts              # Development environment
+│   │   └── environment.prod.ts         # Production environment
+│   ├── index.html                      # Main HTML file
+│   ├── styles.scss                      # Main style file
+│   └── main.ts                         # Application entry point
+├── .editorconfig                       # Editor configuration
+├── .prettierrc                         # Prettier configuration
+├── angular.json                        # Angular CLI configuration
+├── package.json                        # NPM dependencies
+├── tsconfig.app.json                   # TypeScript app configuration
+├── tsconfig.json                       # TypeScript root configuration
+├── tsconfig.spec.json                  # TypeScript test configuration
+└── README.md                           # Project documentation
+

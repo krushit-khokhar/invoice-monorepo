@@ -31,7 +31,8 @@ export class InvoiceCreateComponent implements OnInit {
       from_address: ['', [Validators.required, Validators.minLength(5)]],
       to_name: ['', [Validators.required, Validators.minLength(2)]],
       to_address: ['', [Validators.required, Validators.minLength(5)]],
-      items: this.fb.array([], Validators.required)
+      items: this.fb.array([], Validators.required),
+      invoice_date: [new Date(), Validators.required],
     });
   }
 
@@ -41,8 +42,8 @@ export class InvoiceCreateComponent implements OnInit {
 
   createItem(): FormGroup {
     return this.fb.group({
-      itemName: ['', [Validators.required, Validators.minLength(2)]],
-      quantity: [1, [Validators.required, Validators.min(1)]],
+      item_name: ['', [Validators.required, Validators.minLength(2)]],
+      qty: [1, [Validators.required, Validators.min(1)]],
       rate: [0, [Validators.required, Validators.min(0)]],
       total: [{ value: 0, disabled: true }]
     });
@@ -61,33 +62,37 @@ export class InvoiceCreateComponent implements OnInit {
 
   calculateItemTotal(index: number): void {
     const itemGroup = this.items.at(index) as FormGroup;
-    const quantity = itemGroup.get('quantity')?.value || 0;
+    const qty = itemGroup.get('qty')?.value || 0;
     const rate = itemGroup.get('rate')?.value || 0;
-    const total = quantity * rate;
+    const total = qty * rate;
     
     itemGroup.patchValue({ total: total.toFixed(2) }, { emitEvent: false });
     this.calculateTotalAmount();
   }
 
   calculateTotalAmount(): number {
-    return this.items.controls.reduce((sum, control) => {
-      return sum + (control.get('total')?.value || 0);
-    }, 0);
+   return this.items.controls.reduce((sum, control) => {
+    const totalValue = control.get('total')?.value;
+    const numericValue = Number(totalValue);
+    return sum + (isNaN(numericValue) ? 0 : numericValue);
+  }, 0);
   }
-
+  formatDateForApi(date: Date): string {
+  return date.toISOString(); // Converts to ISO 8601 format
+ }
   onSubmit(): void {
     if (this.invoiceForm.valid) {
       this.isSubmitting = true;
-      
       const formValue = this.invoiceForm.getRawValue();
       const invoiceData: CreateInvoice = {
         from_name: formValue.from_name,
         from_address: formValue.from_address,
         to_name: formValue.to_name,
         to_address: formValue.to_address,
+        invoice_date: this.formatDateForApi(formValue.invoice_date),
         items: formValue.items.map((item: any) => ({
-          itemName: item.itemName,
-          quantity: item.quantity,
+          item_name: item.item_name,
+          qty: item.qty,
           rate: item.rate
         }))
       };
@@ -95,7 +100,7 @@ export class InvoiceCreateComponent implements OnInit {
       this.invoiceService.createInvoice(invoiceData).subscribe({
         next: (invoice) => {
           this.isSubmitting = false;
-          this.router.navigate(['/invoices', invoice.id]);
+          this.router.navigate(['/invoices']);
         },
         error: (error) => {
           this.isSubmitting = false;

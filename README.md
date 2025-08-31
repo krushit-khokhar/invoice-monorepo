@@ -15,7 +15,7 @@ A monorepo implementation of an Invoice Management System using Clean Architectu
 monorepo(invoice-management)/
 ├── app/
 │ ├── backend/ # Nest.js application
-│ ├── frontend/ # Angular application
+│ └── frontend/ # Angular application
 ├── packages/
 │ └── shared/ # Shared types and utilities
 ├── docker-compose.yml # Docker setup

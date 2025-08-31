@@ -16,7 +16,7 @@ export class CreateInvoiceItemUseCase {
   if (!invoice) {
     throw new NotFoundException(`Invoice with id ${invoice_id} not found`);
   }
-    const item = new InvoiceItem(0, dto.item_name, dto.qty, dto.rate, invoice_id);
+    const item = new InvoiceItem(0, dto.item_name, dto.qty, dto.rate, invoice_id, (dto.qty*dto.rate));
     return this.invoiceItemRepo.create(item);
   }
 }

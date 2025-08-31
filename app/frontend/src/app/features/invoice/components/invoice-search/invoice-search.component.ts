@@ -11,11 +11,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-invoice-search',
   standalone: true,
-    imports: [
+  imports: [
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -24,15 +26,19 @@ import { CommonModule } from '@angular/common';
     MatDatepickerModule,
     MatSelectModule,
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule
   ],
   templateUrl: './invoice-search.component.html',
   styleUrls: ['./invoice-search.component.scss']
 })
 export class InvoiceSearchComponent implements OnInit, OnDestroy {
   @Output() searchChange = new EventEmitter<InvoiceSearchParams>();
-  
+
   searchForm: FormGroup;
+  lastSearchParams: InvoiceSearchParams | null = null;
+  showAdvancedFilters = false;
   private destroy$ = new Subject<void>();
 
   constructor(private fb: FormBuilder) {
@@ -50,49 +56,22 @@ export class InvoiceSearchComponent implements OnInit, OnDestroy {
 
   private createSearchForm(): FormGroup {
     return this.fb.group({
-      // Search term
       search: [''],
-      
-      // Date range
       start_date: [null],
       end_date: [null],
-      
-      // Specific filters
       from_name: [''],
       to_name: [''],
       min_amount: [null],
       max_amount: [null],
-      
-      // Sorting
-      sortBy: ['invoice_date'],
-      order: ['DESC'],
-      
-      // Pagination
-      page: [1],
-      limit: [10]
+      sort_by: ['invoice_date'],  // ✅ FIXED: match InvoiceSearchParams
+      order: ['DESC']
     });
   }
 
   private setupFormListeners(): void {
-    // Debounce text search to avoid too many API calls
-    this.searchForm.get('search')?.valueChanges
-      .pipe(
-        debounceTime(300),
-        takeUntil(this.destroy$)
-      )
+    this.searchForm.valueChanges
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe(() => this.emitSearchParams());
-
-    // Immediate emit for other changes
-    const immediateFields = [
-      'start_date', 'end_date', 'from_name', 'to_name', 
-      'min_amount', 'max_amount', 'sortBy', 'order'
-    ];
-    
-    immediateFields.forEach(field => {
-      this.searchForm.get(field)?.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => this.emitSearchParams());
-    });
   }
 
   private emitSearchParams(): void {
@@ -105,13 +84,18 @@ export class InvoiceSearchComponent implements OnInit, OnDestroy {
       to_name: formValue.to_name || undefined,
       min_amount: formValue.min_amount !== null ? Number(formValue.min_amount) : undefined,
       max_amount: formValue.max_amount !== null ? Number(formValue.max_amount) : undefined,
-      sort_by: formValue.sortBy,
+      sort_by: formValue.sort_by,
       order: formValue.order,
       page: formValue.page,
       limit: formValue.limit
     };
 
+    this.lastSearchParams = searchParams;
     this.searchChange.emit(searchParams);
+  }
+
+  toggleAdvancedFilters(): void {
+    this.showAdvancedFilters = !this.showAdvancedFilters;
   }
 
   onClearFilters(): void {
@@ -123,39 +107,37 @@ export class InvoiceSearchComponent implements OnInit, OnDestroy {
       to_name: '',
       min_amount: null,
       max_amount: null,
-      sortBy: 'invoice_date',
-      order: 'DESC',
-      page: 1,
-      limit: 10
+      sort_by: 'invoice_date',
+      order: 'DESC'
     });
+    this.emitSearchParams(); // ✅ ensure list refreshes
   }
 
   onDateRangeClear(): void {
-    this.searchForm.patchValue({
-      start_date: null,
-      end_date: null
-    });
+    this.searchForm.patchValue({ start_date: null, end_date: null });
+    this.emitSearchParams();
   }
 
   onAmountRangeClear(): void {
-    this.searchForm.patchValue({
-      min_amount: null,
-      max_amount: null
-    });
+    this.searchForm.patchValue({ min_amount: null, max_amount: null });
+    this.emitSearchParams();
   }
 
   hasActiveFilters(): boolean {
-    const formValue = this.searchForm.value;
-    return !!(
-      formValue.search ||
-      formValue.start_date ||
-      formValue.end_date ||
-      formValue.from_name ||
-      formValue.to_name ||
-      formValue.min_amount !== null ||
-      formValue.max_amount !== null ||
-      formValue.sortBy !== 'invoice_date' ||
-      formValue.order !== 'DESC'
-    );
+    const f = this.searchForm.value;
+    return !!(f.search || f.start_date || f.end_date || f.from_name || f.to_name || f.min_amount !== null || f.max_amount !== null);
+  }
+
+  getActiveFilterCount(): number {
+    const f = this.searchForm.value;
+    let count = 0;
+    if (f.search) count++;
+    if (f.start_date) count++;
+    if (f.end_date) count++;
+    if (f.from_name) count++;
+    if (f.to_name) count++;
+    if (f.min_amount !== null) count++;
+    if (f.max_amount !== null) count++;
+    return count;
   }
 }

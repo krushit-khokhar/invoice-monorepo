@@ -10,7 +10,7 @@ export class CreateInvoiceUseCase {
     const invoice_number =
       dto.invoice_number?.trim() || this.generateinvoice_number();
     const items = dto.items.map((i, idx) =>
-      new InvoiceItem(0, i.item_name, i.qty, i.rate, 0),
+      new InvoiceItem(0, i.item_name, i.qty, i.rate, 0, (i.qty*i.rate)),
     );
 
     const invoice = new Invoice(

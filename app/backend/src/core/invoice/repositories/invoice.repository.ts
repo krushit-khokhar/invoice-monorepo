@@ -6,7 +6,11 @@ export abstract class InvoiceRepository {
   abstract create(invoice: Invoice): Promise<Invoice>;
 
   //Find all invoices (with optional sorting by date).
-  abstract findAll(order: 'ASC' | 'DESC'): Promise<Invoice[]>;
+  abstract findAll(
+    order: 'ASC' | 'DESC',
+    page?: number,
+    limit?: number
+  ): Promise<{data: Invoice[]; total: number; page: number; limit: number, total_pages:number }>;
 
   //Find one invoice by ID.
   abstract findById(id: number): Promise<Invoice | null>;

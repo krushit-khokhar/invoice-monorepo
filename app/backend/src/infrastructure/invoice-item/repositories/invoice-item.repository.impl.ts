@@ -13,7 +13,7 @@ export class InvoiceItemRepositoryImpl implements IInvoiceItemRepository {
   ) {}
 
   private toDomain(e: InvoiceItemOrmEntity): DomainInvoiceItem {
-    return new DomainInvoiceItem(e.id, e.item_name, Number(e.qty), Number(e.rate), Number(e.invoice.id));
+    return new DomainInvoiceItem(e.id, e.item_name, Number(e.qty), Number(e.rate), Number(e.invoice.id), Number(e.total));
   }
 
   async create(item: DomainInvoiceItem): Promise<DomainInvoiceItem> {
