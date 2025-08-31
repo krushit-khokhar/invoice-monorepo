@@ -1,0 +1,92 @@
+.invoice-list-container {
+  padding: 20px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .toolbar {
+    margin-bottom: 20px;
+
+    .search-field {
+      width: 100%;
+      max-width: 400px;
+    }
+  }
+
+  .table-container {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    th {
+      font-weight: 600;
+      background: #f5f5f5;
+    }
+
+    td, th {
+      padding: 12px 16px;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      color: #ccc;
+    }
+
+    p {
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .invoice-list-container {
+    padding: 10px;
+
+    .header {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    table {
+      min-width: 600px;
+    }
+
+    .mat-table {
+      overflow-x: auto;
+    }
+  }
+}

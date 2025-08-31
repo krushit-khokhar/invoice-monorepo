@@ -1,0 +1,46 @@
+.not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+  
+  .not-found-content {
+    text-align: center;
+    max-width: 500px;
+    
+    .error-code {
+      font-size: 8rem;
+      font-weight: bold;
+      color: #e0e0e0;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    
+    .error-title {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    
+    .error-message {
+      color: #666;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .not-found-container {
+    .not-found-content {
+      .error-code {
+        font-size: 6rem;
+      }
+      
+      .error-title {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}

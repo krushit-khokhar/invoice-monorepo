@@ -1,0 +1,77 @@
+<div class="invoice-detail-container">
+  <div class="header" *ngIf="invoice">
+    <div class="header-left">
+      <button mat-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon> Back to List
+      </button>
+      <h2>Invoice Details</h2>
+    </div>
+    <div class="header-right">
+      <button mat-raised-button color="primary" (click)="printInvoice()">
+        <mat-icon>print</mat-icon> Print
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-overlay" *ngIf="isLoading">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+
+  <div class="invoice-content" *ngIf="invoice && !isLoading">
+    <!-- Invoice Header -->
+    <div class="invoice-header">
+      <div class="invoice-info">
+        <h1>INVOICE</h1>
+        <div class="invoice-number">#{{ invoice.invoice_number }}</div>
+        <div class="invoice-date">Date: {{ invoice.invoice_date | dateFormat }}</div>
+      </div>
+      <div class="invoice-total">
+        <h2>Total: {{ invoice.total | currencyFormat }}</h2>
+      </div>
+    </div>
+
+    <!-- From and To Details -->
+    <div class="details-section">
+      <div class="from-details">
+        <h3>From:</h3>
+        <p><strong>{{ invoice.from_name }}</strong></p>
+        <p>{{ invoice.fromAddress }}</p>
+      </div>
+      
+      <div class="to-details">
+        <h3>To:</h3>
+        <p><strong>{{ invoice.to_name }}</strong></p>
+        <p>{{ invoice.toAddress }}</p>
+      </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="items-section">
+      <h3>Items</h3>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of invoice.items">
+            <td>{{ item.itemName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.rate | currencyFormat }}</td>
+            <td>{{ item.total | currencyFormat }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="total-label">Grand Total</td>
+            <td class="total-amount">{{ invoice.total | currencyFormat }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

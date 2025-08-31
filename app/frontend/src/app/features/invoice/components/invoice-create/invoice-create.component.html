@@ -1,0 +1,151 @@
+<div class="invoice-create-container">
+  <div class="header">
+    <h2>Create New Invoice</h2>
+    <button mat-button routerLink="/invoices" class="back-button">
+      <mat-icon>arrow_back</mat-icon> Back to List
+    </button>
+  </div>
+  
+  <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()" class="invoice-form">
+    <!-- From Details -->
+    <div class="form-section">
+      <h3>From Details</h3>
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="from_name" required>
+          <mat-error *ngIf="invoiceForm.get('from_name')?.hasError('required')">
+            Name is required
+          </mat-error>
+          <mat-error *ngIf="invoiceForm.get('from_name')?.hasError('minlength')">
+            Name must be at least 2 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field-full">
+          <mat-label>Address</mat-label>
+          <textarea matInput formControlName="fromAddress" rows="3" required></textarea>
+          <mat-error *ngIf="invoiceForm.get('fromAddress')?.hasError('required')">
+            Address is required
+          </mat-error>
+          <mat-error *ngIf="invoiceForm.get('fromAddress')?.hasError('minlength')">
+            Address must be at least 5 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- To Details -->
+    <div class="form-section">
+      <h3>To Details</h3>
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="to_name" required>
+          <mat-error *ngIf="invoiceForm.get('to_name')?.hasError('required')">
+            Name is required
+          </mat-error>
+          <mat-error *ngIf="invoiceForm.get('to_name')?.hasError('minlength')">
+            Name must be at least 2 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field-full">
+          <mat-label>Address</mat-label>
+          <textarea matInput formControlName="toAddress" rows="3" required></textarea>
+          <mat-error *ngIf="invoiceForm.get('toAddress')?.hasError('required')">
+            Address is required
+          </mat-error>
+          <mat-error *ngIf="invoiceForm.get('toAddress')?.hasError('minlength')">
+            Address must be at least 5 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Items</h3>
+        <button type="button" mat-raised-button color="primary" (click)="addItem()">
+          <mat-icon>add</mat-icon> Add Item
+        </button>
+      </div>
+
+      <div formArrayName="items" class="items-container">
+        <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i" class="item-row">
+          <div class="item-fields">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Item Name</mat-label>
+              <input matInput formControlName="itemName" required>
+              <mat-error *ngIf="items.at(i).get('itemName')?.hasError('required')">
+                Item name is required
+              </mat-error>
+              <mat-error *ngIf="items.at(i).get('itemName')?.hasError('minlength')">
+                Item name must be at least 2 characters
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field-small">
+              <mat-label>Qty</mat-label>
+              <input matInput type="number" formControlName="quantity" 
+                     (input)="calculateItemTotal(i)" min="1" required>
+              <mat-error *ngIf="items.at(i).get('quantity')?.hasError('required')">
+                Quantity is required
+              </mat-error>
+              <mat-error *ngIf="items.at(i).get('quantity')?.hasError('min')">
+                Minimum quantity is 1
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Rate</mat-label>
+              <input matInput type="number" formControlName="rate" 
+                     (input)="calculateItemTotal(i)" min="0" step="0.01" required>
+              <span matPrefix>$&nbsp;</span>
+              <mat-error *ngIf="items.at(i).get('rate')?.hasError('required')">
+                Rate is required
+              </mat-error>
+              <mat-error *ngIf="items.at(i).get('rate')?.hasError('min')">
+                Rate must be positive
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Total</mat-label>
+              <input matInput formControlName="total" disabled>
+              <span matPrefix>$&nbsp;</span>
+            </mat-form-field>
+
+            <button type="button" mat-icon-button color="warn" 
+                    (click)="removeItem(i)" class="remove-btn" [disabled]="items.length <= 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <mat-error *ngIf="items.invalid && items.touched" class="items-error">
+        At least one item is required
+      </mat-error>
+    </div>
+
+    <!-- Total Amount -->
+    <div class="total-section">
+      <h3>Total Amount: {{ calculateTotalAmount() | currencyFormat }}</h3>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" mat-button routerLink="/invoices">Cancel</button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="isSubmitting">
+        <span *ngIf="!isSubmitting">Create Invoice</span>
+        <span *ngIf="isSubmitting">Creating...</span>
+      </button>
+    </div>
+  </form>
+</div>

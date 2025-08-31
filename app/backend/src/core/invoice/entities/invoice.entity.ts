@@ -16,7 +16,7 @@ export class Invoice {
   }
 
   // Calculate the total amount of the invoice
-  get totalAmount(): number {
+  get total_amount(): number {
     return this.items.reduce((sum, item) => sum + item.total, 0);
   }
 
