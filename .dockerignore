@@ -1,0 +1,14 @@
+# Ignore dependencies
+**/node_modules
+**/.pnpm
+**/dist
+**/build
+**/.next
+
+# Ignore VCS
+.git
+.gitignore
+
+# Ignore Docker files
+Dockerfile
+docker-compose.yml

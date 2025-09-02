@@ -2,6 +2,9 @@
 CREATE DATABASE IF NOT EXISTS invoice_db;
 USE invoice_db;
 
+CREATE USER IF NOT EXISTS 'dev_user'@'%' IDENTIFIED BY 'dev_password';
+GRANT ALL PRIVILEGES ON invoice_db.* TO 'dev_user'@'%';
+FLUSH PRIVILEGES;
 -- Table: invoices
 CREATE TABLE invoices (
   id INT AUTO_INCREMENT PRIMARY KEY,

@@ -8,7 +8,15 @@
     "test": "pnpm run --recursive test",
     "dev:backend": "pnpm --filter @invoice/backend start:dev",
     "dev:frontend": "pnpm --filter @invoice/frontend start",
-    "install:all": "pnpm install --recursive"
+    "install:all": "pnpm install --recursive",
+    "dev": "docker-compose up -d",
+    "dev:build": "docker-compose up -d --build",
+    "dev:logs": "docker-compose logs -f",
+    "dev:down": "docker-compose down",
+    "dev:clean": "docker-compose down -v",
+    "backend:logs": "docker-compose logs -f backend",
+    "frontend:logs": "docker-compose logs -f frontend",
+    "db:logs": "docker-compose logs -f mysql"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

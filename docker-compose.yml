@@ -1,38 +1,99 @@
+version: '3.8'
+
 services:
-  backend:
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: invoice-mysql
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root_password
+  #     MYSQL_DATABASE: invoice_db
+  #     MYSQL_USER: dev_user
+  #     MYSQL_PASSWORD: dev_password
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #     - ./app/backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+  #   networks:
+  #     - invoice-network
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "dev_user", "-p$$MYSQL_ROOT_PASSWORD"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+
+
+
+  # phpmyadmin:
+  #   image: phpmyadmin:latest
+  #   container_name: invoice-phpmyadmin
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8080:80"
+  #   environment:
+  #     PMA_HOST: mysql
+  #     PMA_PORT: 3306
+  #     PMA_USER: dev_user
+  #     PMA_PASSWORD: dev_password
+  #     UPLOAD_LIMIT: 128M
+  #   volumes:
+  #   - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   networks:
+  #     - invoice-network
+  
+
+  # NestJS Backend
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./app/backend/Dockerfile
+  #   container_name: invoice-backend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5000:5000"
+  #     - "9229:9229"
+  #   env_file:
+  #     - ./app/backend/.env
+  #   volumes:
+  #     - ./app/backend/src:/app/src
+  #     - ./packages/shared:/app/packages/shared
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   command: sh -c "pnpm install && pnpm run start:dev"
+  #   networks:
+  #     - invoice-network
+  
+  
+  frontend:
     build:
-      context: ./app/backend
-      dockerfile: Dockerfile
-    container_name: invoice-backend
-    restart: always
+      context: .
+      dockerfile: ./app/frontend/Dockerfile
+    container_name: invoice-frontend
+    restart: unless-stopped
     ports:
-      - "5000:5000"
-    env_file:
-      - ./app/backend/.env
+      - "4200:4200"
+      - "49153:49153"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - API_URL=http://localhost:5000
     volumes:
-      - ./app/backend:/app
-      - /app/node_modules
+      - ./app/frontend/src:/app/src
+      - ./packages/shared:/app/packages/shared
+    # depends_on:
+    #   - backend
+    command: sh -c "pnpm install && pnpm start"
     networks:
       - invoice-network
-    
-  # frontend:
-  #   build:
-  #     context: ./app/frontend
-  #     dockerfile: Dockerfile
-  #   container_name: invoice-frontend
-  #   restart: always
-  #   ports:
-  #     - "4200:4200"
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     API_URL: ${API_URL}
-  #   volumes:
-  #     - ./app/frontend:/app
-  #     - /app/node_modules
+
+# volumes:
+#   mysql_data:
 
 networks:
   invoice-network:
     driver: bridge
-    external: true
-    name: shared-network
